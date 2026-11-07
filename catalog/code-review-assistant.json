@@ -15,7 +15,7 @@
   "allowed_dot_paths": [],
   "source_type": "github",
   "usage": "Good for PR reviews. Customize the severity rubric to match your team's standards.",
-  "notes": null,
+  "notes": "POC machine publish check for T025 (2026-11-07)",
   "content_path": "skills/code-review-assistant.md",
   "source_tracking": null,
   "repository_url": "https://github.com/example/code-review-skill",

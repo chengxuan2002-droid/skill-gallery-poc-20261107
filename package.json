@@ -1,0 +1,41 @@
+{
+  "name": "skill-gallery",
+  "version": "0.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=26.3.0 <27"
+  },
+  "packageManager": "npm@11.16.0",
+  "scripts": {
+    "lint": "eslint assets scripts tests eslint.config.mjs",
+    "format:check": "prettier --check index.html assets/*.js assets/style.css scripts tests config .github/workflows eslint.config.mjs .prettierrc.json package.json",
+    "test": "node --test tests/unit/*.test.js tests/integration/*.test.js",
+    "build": "node scripts/build-index.js",
+    "preview": "node scripts/preview.js",
+    "monitor:site": "node scripts/check-site.js",
+    "setup:security": "node scripts/setup-security-tools.js",
+    "security:secrets": "node scripts/check-project.js secrets",
+    "security:code": "node scripts/check-project.js code",
+    "security:deps": "node scripts/check-project.js deps",
+    "check": "npm run lint && npm run format:check && npm test",
+    "security": "npm run security:secrets && npm run security:code && npm run security:deps"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "eslint": "10.14.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.14.0",
+    "prettier": "3.9.10",
+    "yauzl": "3.4.0"
+  },
+  "overrides": {
+    "minimatch": "11.0.4"
+  },
+  "dependencies": {
+    "marked": "18.1.2",
+    "minisearch": "6.3.0",
+    "sanitize-html": "2.18.1",
+    "yaml": "2.9.1",
+    "yazl": "3.3.1"
+  }
+}

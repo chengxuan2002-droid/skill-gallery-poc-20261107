@@ -1,0 +1,4 @@
+title = "Skill Gallery public-file secret checks"
+
+[extend]
+useDefault = true

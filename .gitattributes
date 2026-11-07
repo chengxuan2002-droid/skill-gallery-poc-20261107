@@ -1,0 +1,6 @@
+# Keep project text in LF so formatting, hashes and digests are platform independent.
+* text=auto eol=lf
+
+# Skill originals are protected bytes: never convert line endings. `diff` keeps
+# them readable in review while the worktree stays byte-identical to the index.
+skills/** -text diff

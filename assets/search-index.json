@@ -1,0 +1,100 @@
+[
+  {
+    "slug": "superpower-systematic-debugging",
+    "name": "Systematic Debugging",
+    "description": "Step-by-step debugging workflow for reproducing and fixing any bug",
+    "tags": [
+      "debugging",
+      "workflow",
+      "problem-solving"
+    ],
+    "platforms": [
+      "codex",
+      "claude-code",
+      "generic"
+    ],
+    "source": "self-built",
+    "source_url": null,
+    "author": "Your Name",
+    "version": null,
+    "created_at": "2026-08-02",
+    "updated_at": "2026-08-02",
+    "usage_notes": "Most useful for bugs that are hard to reproduce.\nAlways start with reproduction steps before diving into code.",
+    "content": "Systematic Debugging\n\nA rigorous, step-by-step approach to debugging any software issue.\n\nSteps\n\nReproduce the bug — Get a reliable reproduction case. If you can't reproduce it, you can't fix it.\nNarrow the scope — Bisect commits, disable features, find the minimal input that triggers it.\nForm a hypothesis — What could cause this behavior? Write it down.\nTest the hypothesis — Add logging, use a debugger, run experiments.\nImplement the fix — Smallest possible change.\nVerify — Confirm the bug is gone and no regressions were introduced.\nAdd a test — Prevent the bug from coming back.\n\nCommon Pitfalls\n\n• Changing multiple things at once\n• Assuming the bug is in someone else's code\n• Skipping reproduction to \"just look at the code\"",
+    "is_dir": false,
+    "files": []
+  },
+  {
+    "slug": "handoff-codex",
+    "name": "handoff-codex",
+    "description": "长会话结束前自动生成交接文档，写入项目 handoff/ 目录，涵盖当前进度、已完成项、阻塞点、下一步和避坑指南。",
+    "tags": [
+      "productivity",
+      "handoff",
+      "workflow"
+    ],
+    "platforms": [
+      "codex"
+    ],
+    "source": "self-built",
+    "source_url": null,
+    "author": "chengxuan",
+    "version": "1.0.0",
+    "created_at": "2026-07-20",
+    "updated_at": "2026-08-02",
+    "usage_notes": "适合多轮长对话、暂停工作、或用户说\"交接/保存进度/记录一下\"时使用。脚本路径为 scripts/create_handoff.sh。",
+    "content": "Handoff Codex\n\n长会话结束前生成一份交接文档，让下一次会话（或接手的人）能快速接上进度。\n\n何时使用\n\n• 即将结束一轮多轮对话，手头还有进行中的工作\n• 用户明确说 handoff / 交接 / 保存进度 / 记录一下\n• 暂停复杂工作，稍后再继续\n• 任务做到一个自然的停顿点\n\n工作流程\n\n确定项目根目录 —— 通常是当前工作目录。不确定就问用户。\n运行脚本创建文件：\n   \n   脚本会创建 handoff/ 目录和 handoff-YYYYMMDD-HHMMSS.md 文件，并输出文件路径。\n打开生成的文件，用当前对话的具体信息填充每个章节。\n向用户确认已创建的文件和位置。\n\n写作指南\n\n具体、事实。每个章节都要有可操作的信息，而不是模糊的总结。\n\n现在做什么\n\n• 当前正在进行的具体任务或目标\n• 哪些文件正打开 / 正在编辑\n• 当前采用的方法或策略\n• 接手的人马上需要知道的上下文\n\n已经完成了什么\n\n• 已完成的工作项，带文件路径，不要感受\n• 关键决策及其原因\n• 提交、分支、或产出的文件\n• 跑过的测试及其结果\n\n卡在哪里\n\n• 确切的阻塞点或待解决问题\n• 试过但不奏效的方法\n• 不确定或未知的地方\n• 缺少什么信息\n\n下一步做什么\n\n• 有序的下一步行动列表\n• 优先级很重要\n• 每一项要具体到让一个刚接手的人知道该做什么\n\n哪些坑不要再踩\n\n• 已经探索过的具体错误或死路\n• 环境配置的陷阱\n• 看起来能行但实际不行的事\n• 任何不明显的行为或配置\n\n注意事项\n\n• 默认用中文写；如果对话是英文的就切英文\n• 简洁但完整：优先用要点和具体细节，不用大段散文\n• 有帮助的地方加上文件路径和行号\n• 不要跳过任何章节 —— 如果某节是空的，写\"无\"或\"暂无\"并简要说明原因\n• 写多了比写少了好",
+    "is_dir": true,
+    "files": [
+      "agents/openai.yaml",
+      "scripts/create_handoff.sh"
+    ]
+  },
+  {
+    "slug": "code-review-assistant",
+    "name": "Code Review Assistant",
+    "description": "Structured code review checklist and feedback format",
+    "tags": [
+      "code-review",
+      "quality",
+      "best-practices"
+    ],
+    "platforms": [
+      "codex",
+      "claude-code"
+    ],
+    "source": "github",
+    "source_url": "https://github.com/example/code-review-skill",
+    "author": "Example Author",
+    "version": null,
+    "created_at": "2026-07-15",
+    "updated_at": "2026-08-01",
+    "usage_notes": "Good for PR reviews. Customize the severity rubric to match your team's standards.",
+    "content": "Code Review Assistant\n\nHelps conduct thorough, consistent code reviews.\n\nReview Dimensions\n\n• Correctness: Does the code do what it intends to?\n• Security: Any vulnerabilities or injection risks?\n• Performance: Unnecessary work? O(n²) where it should be O(n)?\n• Readability: Clear naming, consistent style, good comments?\n• Tests: Are there tests? Do they cover the important cases?\n\nFeedback Format\n\nStart with severity:\n• 🔴 Blocking — must fix before merge\n• 🟡 Warning — should fix, discuss if unsure\n• 💡 Suggestion — optional improvement\n• ❓ Question — need clarification",
+    "is_dir": false,
+    "files": []
+  },
+  {
+    "slug": "refactoring-workflow",
+    "name": "Refactoring Workflow",
+    "description": "Safe, incremental refactoring approach that doesn't break things",
+    "tags": [
+      "refactoring",
+      "workflow",
+      "architecture"
+    ],
+    "platforms": [
+      "generic"
+    ],
+    "source": "marketplace",
+    "source_url": "https://marketplace.example.com/refactoring",
+    "author": "Marketplace Author",
+    "version": null,
+    "created_at": "2026-06-20",
+    "updated_at": "2026-07-10",
+    "usage_notes": "The \"test first\" rule is the most important one.\nDon't refactor code that doesn't have tests — write tests first.",
+    "content": "Refactoring Workflow\n\nSafe refactoring in 6 steps.\n\nSteps\n\nEnsure tests exist — If no tests, write them first. You need a safety net.\nRun tests, confirm they pass — Green baseline.\nMake a small refactoring — One change, one concept.\nRun tests again — Should still pass.\nCommit — Small, atomic commit.\nRepeat — Next small refactoring.\n\nRules\n\n• Never refactor and add features in the same commit\n• If tests fail after a refactoring, revert — don't debug forward\n• Rename before you restructure",
+    "is_dir": false,
+    "files": []
+  }
+]

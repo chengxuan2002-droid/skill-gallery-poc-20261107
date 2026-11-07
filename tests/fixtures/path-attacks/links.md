@@ -1,0 +1,18 @@
+# 路径攻击样例
+
+[合法上级](../other.md)
+[越界](../../outside.md)
+[编码越界](%2e%2e%2f%2e%2e%2foutside.md)
+[二次编码](%252e%252e%252f%252e%252e%252foutside.md)
+[编码分隔](%2f..%2foutside.md)
+[绝对路径](/etc/passwd)
+[盘符](C:/Windows/win.ini)
+[反斜杠](..%5Coutside.md)
+[NUL](bad%00.md)
+[协议相对](//evil.example/path)
+[javascript](javascript:alert(1))
+[data](data:text/html,script)
+[file](file:///etc/passwd)
+[mail](mailto:test@example.com)
+[外链](https://example.com/path)
+[未知锚点](#不存在)

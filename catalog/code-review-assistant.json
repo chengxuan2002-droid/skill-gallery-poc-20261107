@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "slug": "code-review-assistant",
+  "display_name": "Code Review Assistant",
+  "description": "Structured code review checklist and feedback format",
+  "tags": [
+    "code-review",
+    "quality",
+    "best-practices"
+  ],
+  "platforms": [
+    "codex",
+    "claude-code"
+  ],
+  "allowed_dot_paths": [],
+  "source_type": "github",
+  "usage": "Good for PR reviews. Customize the severity rubric to match your team's standards.",
+  "notes": null,
+  "content_path": "skills/code-review-assistant.md",
+  "source_tracking": null,
+  "repository_url": "https://github.com/example/code-review-skill",
+  "author": "Example Author",
+  "homepage_url": null,
+  "license": null,
+  "created_at": "2026-07-15",
+  "updated_at": "2026-08-01",
+  "declared_version": null
+}

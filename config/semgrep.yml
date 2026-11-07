@@ -1,0 +1,22 @@
+# Project-owned bootstrap rules v1. C-01 content validation remains separate.
+rules:
+  - id: skill-gallery-no-eval
+    message: Dynamic code execution requires review.
+    severity: ERROR
+    languages: [javascript]
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+  - id: skill-gallery-no-document-write
+    message: Use safe DOM construction.
+    severity: ERROR
+    languages: [javascript]
+    pattern: document.write(...)
+  - id: skill-gallery-no-shell-exec
+    message: Use argument arrays without a shell.
+    severity: ERROR
+    languages: [javascript]
+    pattern-either:
+      - pattern: require('child_process').exec(...)
+      - pattern: require('node:child_process').exec(...)
+      - pattern: exec(...)

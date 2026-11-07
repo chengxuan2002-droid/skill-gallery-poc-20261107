@@ -1,0 +1,7 @@
+skills/
+node_modules/
+.tools/
+dist/
+vendor/
+assets/search-index.json
+tests/fixtures/

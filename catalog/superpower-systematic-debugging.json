@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "slug": "superpower-systematic-debugging",
+  "display_name": "Systematic Debugging",
+  "description": "Step-by-step debugging workflow for reproducing and fixing any bug",
+  "tags": [
+    "debugging",
+    "workflow",
+    "problem-solving"
+  ],
+  "platforms": [
+    "codex",
+    "claude-code",
+    "generic"
+  ],
+  "allowed_dot_paths": [],
+  "source_type": "self-built",
+  "usage": "Most useful for bugs that are hard to reproduce.\nAlways start with reproduction steps before diving into code.",
+  "notes": null,
+  "content_path": "skills/superpower-systematic-debugging.md",
+  "source_tracking": null,
+  "author": "Your Name",
+  "homepage_url": null,
+  "repository_url": null,
+  "license": null,
+  "created_at": "2026-08-02",
+  "updated_at": "2026-08-02",
+  "declared_version": null
+}

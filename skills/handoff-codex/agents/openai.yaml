@@ -1,0 +1,4 @@
+interface:
+  display_name: "Handoff Codex"
+  short_description: "生成对话交接文档，记录进度、阻塞和下一步"
+  default_prompt: "Use $handoff-codex to generate a handoff document for this conversation."

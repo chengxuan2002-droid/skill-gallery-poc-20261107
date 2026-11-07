@@ -1,0 +1,135 @@
+name: Maintain site
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maintain-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      content_revision: ${{ steps.content.outputs.revision }}
+    steps:
+      - name: Check out code without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up the project Node version
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+      - name: Pin npm to the project packageManager version
+        run: npm install --global npm@11.16.0 --ignore-scripts --no-audit --no-fund
+      - name: Set up pinned uv without a shared cache
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          version: '0.12.3'
+          enable-cache: false
+      - name: Install locked project dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Install pinned local security scanners
+        run: npm run setup:security
+      - name: Run lint, formatting and trusted tests
+        run: npm run check
+      - name: Run secret, source and dependency scans
+        run: npm run security
+      - name: Build the static site
+        id: build
+        run: npm run build
+      - name: Read content revision
+        id: content
+        run: |
+          REVISION=$(node -p 'require("./dist/manifest.json").contentRevision')
+          echo "revision=$REVISION" >> "$GITHUB_OUTPUT"
+      - name: Verify the publish artifact
+        run: node scripts/publish-check.js artifact --dist dist
+      - name: Upload the Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: dist
+      - name: Write build summary
+        if: always()
+        env:
+          PUBLISH_PHASE: build
+          PUBLISH_RUN_ID: ${{ github.run_id }}
+          PUBLISH_TRIGGER: ${{ github.event_name }}
+          PUBLISH_TARGET_SHA: ${{ github.sha }}
+          PUBLISH_COMMIT_STATUS: not_applicable
+          PUBLISH_CONTENT_REVISION: ${{ steps.content.outputs.revision }}
+          PUBLISH_CONTENT_STATUS: ${{ steps.build.outcome == 'success' && 'built' || 'failed' }}
+          PUBLISH_JOB_STATUS: ${{ job.status }}
+          PUBLISH_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: node scripts/publish-summary.js
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment: github-pages
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: Check out the target commit without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up the project Node version
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+      - name: Check target freshness
+        id: freshness
+        shell: bash
+        run: |
+          set +e
+          REMOTE=$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)
+          node scripts/publish-check.js target --target "$GITHUB_SHA" --remote "$REMOTE" > freshness.json 2> freshness.err
+          CODE=$?
+          set -e
+          if [ "$CODE" -ne 0 ] && [ "$CODE" -ne 4 ]; then
+            cat freshness.err
+            exit "$CODE"
+          fi
+          DECISION=$(node -p "require('./freshness.json').decision")
+          echo "decision=$DECISION" >> "$GITHUB_OUTPUT"
+          echo "remote=$REMOTE" >> "$GITHUB_OUTPUT"
+      - name: POC deploy failure injection
+        if: vars.POC_FAIL_DEPLOY == '1'
+        run: exit 1
+      - name: Deploy to GitHub Pages
+        id: deployment
+        if: steps.freshness.outputs.decision == 'current'
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+      - name: Write publish summary
+        if: always()
+        env:
+          PUBLISH_PHASE: deploy
+          PUBLISH_RUN_ID: ${{ github.run_id }}
+          PUBLISH_TRIGGER: ${{ github.event_name }}
+          PUBLISH_TARGET_SHA: ${{ github.sha }}
+          PUBLISH_COMMIT_STATUS: not_applicable
+          PUBLISH_CONTENT_REVISION: ${{ needs.build.outputs.content_revision }}
+          PUBLISH_CONTENT_STATUS: built
+          PUBLISH_DEPLOY_DECISION: ${{ steps.freshness.outputs.decision || 'unknown' }}
+          PUBLISH_DEPLOY_OUTCOME: ${{ steps.deployment.outcome || 'skipped' }}
+          PUBLISH_JOB_STATUS: ${{ job.status }}
+          PUBLISH_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          PUBLISH_PAGE_URL: ${{ steps.deployment.outputs.page_url || '' }}
+        run: node scripts/publish-summary.js

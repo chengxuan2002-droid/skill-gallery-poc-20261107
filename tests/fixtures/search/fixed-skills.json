@@ -1,0 +1,341 @@
+{
+  "schemaVersion": 1,
+  "description": "US-002 isolated search fixture; not part of the formal catalog.",
+  "skills": [
+    {
+      "slug": "systematic-debugging",
+      "display_name": "Systematic Debugging",
+      "description": "Step-by-step debugging workflow for reproducing and fixing bugs",
+      "tags": ["debugging", "workflow", "problem-solving"],
+      "platforms": ["codex", "claude-code", "generic"],
+      "author": "Example Author",
+      "source_type": "self-built",
+      "usage": "Most useful for bugs that are hard to reproduce.\nAlways start with reproduction steps before diving into code.",
+      "notes": null,
+      "declared_version": "1.0.0",
+      "updated_at": "2026-08-02",
+      "content_text": "Systematic debugging workflow. Reproduce the bug, isolate the cause, write a failing test, fix it, and verify. 中文说明：先复现问题，再定位原因。"
+    },
+    {
+      "slug": "document-converter",
+      "display_name": "文档转换助手",
+      "description": "将办公文档转换为 Markdown，保留标题、表格和代码块",
+      "tags": ["文档工具", "productivity", "markdown"],
+      "platforms": ["generic", "codex"],
+      "author": "文档小组",
+      "source_type": "github",
+      "usage": "适合批量处理 Word/PDF/网页，输出结构化 Markdown。",
+      "notes": "批量转换时先备份原文件。",
+      "declared_version": null,
+      "updated_at": "2026-09-15",
+      "content_text": "文档转换 办公文档 Markdown 标题 表格 代码块 中文路径 参考 docs/中文 空格.md"
+    },
+    {
+      "slug": "code-review-assistant",
+      "display_name": "Code Review Assistant",
+      "description": "Review code changes for correctness, security and maintainability",
+      "tags": ["review", "code-quality"],
+      "platforms": ["generic", "claude-code"],
+      "author": "Example Author",
+      "source_type": "self-built",
+      "usage": "Use before merging a pull request; focus on behavior changes and tests.",
+      "notes": null,
+      "declared_version": "0.9.0",
+      "updated_at": "2026-07-20",
+      "content_text": "Code review checklist: correctness security tests maintainability pull request."
+    },
+    {
+      "slug": "handoff-codex",
+      "display_name": "handoff-codex",
+      "description": "长会话结束前自动生成交接文档",
+      "tags": ["productivity", "handoff", "workflow"],
+      "platforms": ["codex"],
+      "author": "Example Author",
+      "source_type": "self-built",
+      "usage": "适合多轮长对话、暂停工作，或用户说交接/保存进度时使用。",
+      "notes": null,
+      "declared_version": "1.0.0",
+      "updated_at": "2026-08-02",
+      "content_text": "交接文档 handoff 当前进度 已完成 阻塞点 下一步 避坑指南"
+    },
+    {
+      "slug": "missing-metadata",
+      "display_name": "最小标准样例",
+      "description": "只有名称和简介的合法样例",
+      "tags": [],
+      "platforms": [],
+      "author": null,
+      "source_type": null,
+      "usage": null,
+      "notes": null,
+      "declared_version": null,
+      "updated_at": null,
+      "content_text": "最小标准字段样例 只含名称和简介"
+    },
+    {
+      "slug": "tie-alpha",
+      "display_name": "Tie Alpha",
+      "description": "same score sample",
+      "tags": ["tie"],
+      "platforms": ["generic"],
+      "author": null,
+      "source_type": null,
+      "usage": "same score",
+      "notes": null,
+      "declared_version": null,
+      "updated_at": "2026-01-01",
+      "content_text": "same score sample alpha"
+    },
+    {
+      "slug": "tie-beta",
+      "display_name": "Tie Beta",
+      "description": "same score sample",
+      "tags": ["tie"],
+      "platforms": ["generic"],
+      "author": null,
+      "source_type": null,
+      "usage": "same score",
+      "notes": null,
+      "declared_version": null,
+      "updated_at": "2026-01-01",
+      "content_text": "same score sample beta"
+    },
+    {
+      "slug": "long-code-sample",
+      "display_name": "长代码样例",
+      "description": "包含代码块、表格和中文路径的展示样例",
+      "tags": ["sample", "markdown"],
+      "platforms": ["generic"],
+      "author": "样例作者",
+      "source_type": "self-built",
+      "usage": "用于检查代码表格和相对路径。",
+      "notes": "附件路径 docs/中文 空格.md",
+      "declared_version": "2.0.0",
+      "updated_at": "2026-10-01",
+      "content_text": "代码块 表格 中文路径 docs/中文 空格.md long code sample"
+    }
+  ],
+  "queries": [
+    {
+      "id": "exact-debug",
+      "query": "debug",
+      "mode": "exact",
+      "expected": ["systematic-debugging"]
+    },
+    {
+      "id": "exact-chinese-phrase",
+      "query": "\"文档转换\"",
+      "mode": "exact",
+      "expected": ["document-converter"]
+    },
+    {
+      "id": "fuzzy-typo",
+      "query": "debuging",
+      "mode": "fuzzy",
+      "expected": ["systematic-debugging"]
+    },
+    {
+      "id": "fuzzy-chinese-substring",
+      "query": "文档转换",
+      "mode": "fuzzy",
+      "expected": ["document-converter"]
+    },
+    {
+      "id": "exact-review",
+      "query": "review",
+      "mode": "exact",
+      "expected": ["code-review-assistant"]
+    },
+    {
+      "id": "empty-result",
+      "query": "no-such-skill",
+      "mode": "fuzzy",
+      "expected": []
+    },
+    {
+      "id": "tag-or",
+      "query": "",
+      "mode": "fuzzy",
+      "tags": ["debugging", "handoff"],
+      "expected": ["handoff-codex", "systematic-debugging"]
+    },
+    {
+      "id": "platform-and-author",
+      "query": "",
+      "mode": "fuzzy",
+      "platforms": ["codex"],
+      "authors": ["Example Author"],
+      "expected": ["handoff-codex", "systematic-debugging"]
+    },
+    {
+      "id": "source-filter",
+      "query": "",
+      "mode": "fuzzy",
+      "sourceTypes": ["github"],
+      "expected": ["document-converter"]
+    },
+    {
+      "id": "missing-value-does-not-match",
+      "query": "",
+      "mode": "fuzzy",
+      "authors": ["Example Author"],
+      "sourceTypes": ["github"],
+      "expected": []
+    },
+    {
+      "id": "updated-sort",
+      "query": "",
+      "mode": "fuzzy",
+      "sort": "updated",
+      "expected": [
+        "long-code-sample",
+        "document-converter",
+        "handoff-codex",
+        "systematic-debugging",
+        "code-review-assistant",
+        "tie-alpha",
+        "tie-beta",
+        "missing-metadata"
+      ]
+    },
+    {
+      "id": "stable-tie",
+      "query": "same score sample",
+      "mode": "exact",
+      "expected": ["tie-alpha", "tie-beta"]
+    },
+    {
+      "id": "exact-multiword",
+      "query": "code review",
+      "mode": "exact",
+      "expected": ["code-review-assistant"]
+    },
+    {
+      "id": "exact-case-whitespace",
+      "query": "  CODE   REVIEW  ",
+      "mode": "exact",
+      "expected": ["code-review-assistant"]
+    },
+    {
+      "id": "exact-content",
+      "query": "reproduce",
+      "mode": "exact",
+      "expected": ["systematic-debugging"]
+    },
+    {
+      "id": "exact-author",
+      "query": "Example Author",
+      "mode": "exact",
+      "expected": ["code-review-assistant", "handoff-codex", "systematic-debugging"]
+    },
+    {
+      "id": "exact-source",
+      "query": "self-built",
+      "mode": "exact",
+      "expected": [
+        "code-review-assistant",
+        "handoff-codex",
+        "long-code-sample",
+        "systematic-debugging"
+      ]
+    },
+    {
+      "id": "exact-tag",
+      "query": "code-quality",
+      "mode": "exact",
+      "expected": ["code-review-assistant"]
+    },
+    {
+      "id": "exact-platform",
+      "query": "claude-code",
+      "mode": "exact",
+      "expected": ["code-review-assistant", "systematic-debugging"]
+    },
+    {
+      "id": "exact-usage",
+      "query": "批量处理",
+      "mode": "exact",
+      "expected": ["document-converter"]
+    },
+    {
+      "id": "exact-notes",
+      "query": "备份",
+      "mode": "exact",
+      "expected": ["document-converter"]
+    },
+    {
+      "id": "fuzzy-content-word",
+      "query": "maintainability",
+      "mode": "fuzzy",
+      "expected": ["code-review-assistant"]
+    },
+    {
+      "id": "fuzzy-description-chinese",
+      "query": "长会话",
+      "mode": "fuzzy",
+      "expected": ["handoff-codex"]
+    },
+    {
+      "id": "fuzzy-notes-path",
+      "query": "附件路径",
+      "mode": "fuzzy",
+      "expected": ["long-code-sample"]
+    },
+    {
+      "id": "tag-and-author",
+      "query": "",
+      "mode": "fuzzy",
+      "tags": ["workflow"],
+      "authors": ["Example Author"],
+      "expected": ["handoff-codex", "systematic-debugging"]
+    },
+    {
+      "id": "platform-or",
+      "query": "",
+      "mode": "fuzzy",
+      "platforms": ["claude-code", "codex"],
+      "expected": [
+        "document-converter",
+        "handoff-codex",
+        "systematic-debugging",
+        "code-review-assistant"
+      ]
+    },
+    {
+      "id": "author-only",
+      "query": "",
+      "mode": "fuzzy",
+      "authors": ["文档小组"],
+      "expected": ["document-converter"]
+    },
+    {
+      "id": "name-sort",
+      "query": "",
+      "mode": "fuzzy",
+      "sort": "name",
+      "expected": [
+        "document-converter",
+        "long-code-sample",
+        "missing-metadata",
+        "code-review-assistant",
+        "handoff-codex",
+        "systematic-debugging",
+        "tie-alpha",
+        "tie-beta"
+      ]
+    },
+    {
+      "id": "named-query-updated-sort",
+      "query": "sample",
+      "mode": "fuzzy",
+      "sort": "updated",
+      "expected": ["long-code-sample", "tie-alpha", "tie-beta"]
+    },
+    {
+      "id": "unclosed-quote",
+      "query": "\"文档转换",
+      "mode": "exact",
+      "expected": []
+    }
+  ]
+}

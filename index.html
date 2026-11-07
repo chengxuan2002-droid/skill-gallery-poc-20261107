@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Skill Gallery</title>
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="container header-row">
+        <div>
+          <h1 class="app-title">Skill Gallery</h1>
+          <p class="app-subtitle">Personal collection of useful AI agent skills</p>
+        </div>
+        <button id="theme-toggle" class="theme-toggle" title="Toggle theme">🌙</button>
+      </div>
+    </header>
+
+    <main class="container app-main">
+      <div id="app">
+        <div class="loading">Loading skills...</div>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <div class="container">
+        <span id="skill-count"></span>
+        <span class="footer-sep">·</span>
+        <a href="https://github.com/" target="_blank" rel="noopener">Source</a>
+      </div>
+    </footer>
+
+    <script src="assets/vendor/minisearch-6.3.0.min.js"></script>
+    <script src="assets/app-dom.js"></script>
+    <script src="assets/app-search.js"></script>
+    <script src="assets/app-filters.js"></script>
+    <script src="assets/app-actions.js"></script>
+    <script src="assets/app-views.js"></script>
+    <script src="assets/app-detail.js"></script>
+    <script src="assets/app.js"></script>
+  </body>
+</html>

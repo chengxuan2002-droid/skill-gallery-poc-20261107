@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "slug": "refactoring-workflow",
+  "display_name": "Refactoring Workflow",
+  "description": "Safe, incremental refactoring approach that doesn't break things",
+  "tags": [
+    "refactoring",
+    "workflow",
+    "architecture"
+  ],
+  "platforms": [
+    "generic"
+  ],
+  "allowed_dot_paths": [],
+  "source_type": "marketplace",
+  "usage": "The \"test first\" rule is the most important one.\nDon't refactor code that doesn't have tests — write tests first.",
+  "notes": null,
+  "content_path": "skills/refactoring-workflow.md",
+  "source_tracking": null,
+  "homepage_url": "https://marketplace.example.com/refactoring",
+  "author": "Marketplace Author",
+  "repository_url": null,
+  "license": null,
+  "created_at": "2026-06-20",
+  "updated_at": "2026-07-10",
+  "declared_version": null
+}

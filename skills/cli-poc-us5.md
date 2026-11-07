@@ -6,3 +6,5 @@ description: Controlled skill-cli publish check
 # CLI POC US5
 
 Initial body.
+
+Replaced through skill-cli T021.

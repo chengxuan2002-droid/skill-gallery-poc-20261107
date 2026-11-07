@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "slug": "cli-poc-us5",
+  "display_name": "CLI POC US5",
+  "description": "Controlled skill-cli publish check",
+  "tags": [
+    "poc"
+  ],
+  "platforms": [
+    "generic"
+  ],
+  "allowed_dot_paths": [],
+  "source_type": "self-built",
+  "usage": null,
+  "notes": "T021 controlled publish",
+  "content_path": "skills/cli-poc-us5.md",
+  "source_tracking": null,
+  "author": null,
+  "homepage_url": null,
+  "repository_url": null,
+  "license": null,
+  "created_at": null,
+  "updated_at": null,
+  "declared_version": null
+}

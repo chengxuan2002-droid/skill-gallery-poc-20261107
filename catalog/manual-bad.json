@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "slug": "manual-bad",
+  "description": "missing display_name",
+  "tags": [],
+  "platforms": [],
+  "allowed_dot_paths": [],
+  "source_type": null,
+  "usage": null,
+  "notes": null,
+  "content_path": "skills/manual-bad.md",
+  "source_tracking": null,
+  "author": null,
+  "homepage_url": null,
+  "repository_url": null,
+  "license": null,
+  "created_at": null,
+  "updated_at": null,
+  "declared_version": null
+}

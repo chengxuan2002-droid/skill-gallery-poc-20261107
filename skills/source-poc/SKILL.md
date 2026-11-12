@@ -3,6 +3,6 @@ name: poc-skill
 description: US-006 POC source skill
 ---
 
-# POC Skill v1
+# POC Skill v2
 
-See [old note](references/old.md).
+See [new note](references/new.md).

@@ -4,7 +4,18 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: '17 19 * * *'
   workflow_dispatch:
+    inputs:
+      sync:
+        description: Check and apply GitHub source updates
+        type: boolean
+        default: false
+      slug:
+        description: Optional single catalog slug
+        type: string
+        required: false
 
 permissions:
   contents: read
@@ -14,16 +25,77 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  sync:
+    if: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.sync == true) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    permissions:
+      contents: write
     outputs:
-      content_revision: ${{ steps.content.outputs.revision }}
+      changed: ${{ steps.sync.outputs.changed }}
+      commit_sha: ${{ steps.sync.outputs.commit_sha }}
+      commit_status: ${{ steps.sync.outputs.commit_status }}
     steps:
       - name: Check out code without persisted credentials
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
+      - name: Set up the project Node version
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+          package-manager-cache: false
+      - name: Pin npm to the project packageManager version
+        run: npm install --global npm@11.16.0 --ignore-scripts --no-audit --no-fund
+      - name: Install locked project dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Configure the commit identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Configure restricted Git authentication
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh auth setup-git
+      - name: Check and apply source updates
+        id: sync
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SYNC_SLUG: ${{ inputs.slug }}
+        run: |
+          set +e
+          ARGS=(--apply --push --report sync-report.json --summary "$GITHUB_STEP_SUMMARY")
+          if [ -n "$SYNC_SLUG" ]; then ARGS+=(--slug "$SYNC_SLUG"); fi
+          node scripts/sync-skills.js "${ARGS[@]}"
+          CODE=$?
+          set -e
+          if [ -f sync-report.json ]; then
+            node -e 'const fs=require("node:fs"); const r=require("./sync-report.json"); const lines=["changed="+String(r.changed),"commit_sha="+(r.commit_sha||""),"commit_status="+r.commit_status]; fs.appendFileSync(process.env.GITHUB_OUTPUT, lines.join("\n")+"\n");'
+          else
+            printf 'changed=false\ncommit_sha=\ncommit_status=failed\n' >> "$GITHUB_OUTPUT"
+            printf '### Source sync\n\n- Status: failed before report\n' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          exit $CODE
+
+  build:
+    needs: sync
+    if: ${{ always() && (needs.sync.result == 'skipped' || (needs.sync.result == 'success' && needs.sync.outputs.changed == 'true')) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    outputs:
+      content_revision: ${{ steps.content.outputs.revision }}
+      target_sha: ${{ steps.target.outputs.sha }}
+      commit_status: ${{ needs.sync.outputs.commit_status || 'not_applicable' }}
+    steps:
+      - name: Check out the target commit without persisted credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.sync.outputs.commit_sha || github.sha }}
+          persist-credentials: false
+      - name: Record the target commit
+        id: target
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Set up the project Node version
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
@@ -53,8 +125,8 @@ jobs:
           PUBLISH_PHASE: build
           PUBLISH_RUN_ID: ${{ github.run_id }}
           PUBLISH_TRIGGER: ${{ github.event_name }}
-          PUBLISH_TARGET_SHA: ${{ github.sha }}
-          PUBLISH_COMMIT_STATUS: not_applicable
+          PUBLISH_TARGET_SHA: ${{ steps.target.outputs.sha }}
+          PUBLISH_COMMIT_STATUS: ${{ needs.sync.outputs.commit_status || 'not_applicable' }}
           PUBLISH_CONTENT_REVISION: ${{ steps.content.outputs.revision }}
           PUBLISH_CONTENT_STATUS: ${{ steps.build.outcome == 'success' && 'built' || 'failed' }}
           PUBLISH_JOB_STATUS: ${{ job.status }}
@@ -77,6 +149,7 @@ jobs:
       - name: Check out the target commit without persisted credentials
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ needs.build.outputs.target_sha }}
           persist-credentials: false
       - name: Set up the project Node version
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -86,10 +159,12 @@ jobs:
       - name: Check target freshness
         id: freshness
         shell: bash
+        env:
+          PUBLISH_TARGET_SHA: ${{ needs.build.outputs.target_sha }}
         run: |
           set +e
           REMOTE=$(git ls-remote "https://github.com/${GITHUB_REPOSITORY}.git" refs/heads/main | cut -f1)
-          node scripts/publish-check.js target --target "$GITHUB_SHA" --remote "$REMOTE" > freshness.json 2> freshness.err
+          node scripts/publish-check.js target --target "$PUBLISH_TARGET_SHA" --remote "$REMOTE" > freshness.json 2> freshness.err
           CODE=$?
           set -e
           if [ "$CODE" -ne 0 ] && [ "$CODE" -ne 4 ]; then
@@ -99,9 +174,6 @@ jobs:
           DECISION=$(node -p "require('./freshness.json').decision")
           echo "decision=$DECISION" >> "$GITHUB_OUTPUT"
           echo "remote=$REMOTE" >> "$GITHUB_OUTPUT"
-      - name: POC deploy failure injection
-        if: vars.POC_FAIL_DEPLOY == '1'
-        run: exit 1
       - name: Deploy to GitHub Pages
         id: deployment
         if: steps.freshness.outputs.decision == 'current'
@@ -112,8 +184,8 @@ jobs:
           PUBLISH_PHASE: deploy
           PUBLISH_RUN_ID: ${{ github.run_id }}
           PUBLISH_TRIGGER: ${{ github.event_name }}
-          PUBLISH_TARGET_SHA: ${{ github.sha }}
-          PUBLISH_COMMIT_STATUS: not_applicable
+          PUBLISH_TARGET_SHA: ${{ needs.build.outputs.target_sha }}
+          PUBLISH_COMMIT_STATUS: ${{ needs.build.outputs.commit_status }}
           PUBLISH_CONTENT_REVISION: ${{ needs.build.outputs.content_revision }}
           PUBLISH_CONTENT_STATUS: built
           PUBLISH_DEPLOY_DECISION: ${{ steps.freshness.outputs.decision || 'unknown' }}

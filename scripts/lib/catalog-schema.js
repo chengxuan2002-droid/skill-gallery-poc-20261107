@@ -11,6 +11,7 @@ const { createDiagnostic } = require('./diagnostics');
 const { isForbiddenPath, normalizeRelativePath, validateContentPath } = require('./paths');
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SHA_PATTERN = /^[0-9a-f]{40}$/;
 const TOP_LEVEL_KEYS = new Set([
   'schemaVersion',
   'slug',
@@ -118,8 +119,40 @@ function sourceTracking(value, slug, diagnostics) {
       diagnose(diagnostics, 'E_SCHEMA', { slug }, `source_tracking.${field} 必须是非空字符串`);
     }
   }
+  if (
+    isNonEmptyString(value.repository) &&
+    (!/^[^/\s]+\/[^/\s]+$/.test(value.repository) ||
+      /^[A-Za-z][A-Za-z0-9+.-]*:\/\//.test(value.repository))
+  ) {
+    diagnose(
+      diagnostics,
+      'E_SCHEMA',
+      { slug },
+      'source_tracking.repository 必须是 owner/repository',
+    );
+  }
+  if (isNonEmptyString(value.path)) {
+    const normalized = normalizeRelativePath(value.path);
+    if (!normalized.ok) {
+      diagnose(
+        diagnostics,
+        'E_SCHEMA',
+        { slug, path: value.path },
+        'source_tracking.path 必须是安全相对路径',
+      );
+    }
+  }
   if (!['branch', 'release', 'pinned'].includes(value.ref_policy)) {
     diagnose(diagnostics, 'E_SCHEMA', { slug }, 'source_tracking.ref_policy 不合法');
+  }
+  if (value.ref_policy === 'pinned' && !SHA_PATTERN.test(value.ref)) {
+    diagnose(diagnostics, 'E_SCHEMA', { slug }, 'source_tracking.ref 必须是 40 位提交');
+  }
+  if (
+    isNonEmptyString(value.last_synced_revision) &&
+    !SHA_PATTERN.test(value.last_synced_revision)
+  ) {
+    diagnose(diagnostics, 'E_SCHEMA', { slug }, 'source_tracking.last_synced_revision 不合法');
   }
   if (typeof value.enabled !== 'boolean') {
     diagnose(diagnostics, 'E_SCHEMA', { slug }, 'source_tracking.enabled 必须是布尔值');

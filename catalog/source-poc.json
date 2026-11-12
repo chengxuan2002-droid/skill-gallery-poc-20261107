@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "slug": "source-poc",
+  "display_name": "Source POC",
+  "description": "US-006 POC-003 controlled source sync",
+  "tags": ["poc", "source-sync"],
+  "platforms": ["generic"],
+  "allowed_dot_paths": [],
+  "source_type": "github",
+  "usage": "POC fixture; not part of the production gallery.",
+  "notes": "Site notes must survive source replacement.",
+  "content_path": "skills/source-poc/SKILL.md",
+  "source_tracking": {
+    "provider": "github",
+    "repository": "chengxuan2002-droid/skill-gallery-source-poc-20261112",
+    "path": "skills/poc-skill",
+    "ref_policy": "branch",
+    "ref": "main",
+    "enabled": true,
+    "last_synced_revision": null,
+    "last_synced_digest": null,
+    "synced_at": null
+  },
+  "author": null,
+  "homepage_url": null,
+  "repository_url": "https://github.com/chengxuan2002-droid/skill-gallery-source-poc-20261112",
+  "license": "MIT",
+  "created_at": "2026-11-12",
+  "updated_at": "2026-11-12",
+  "declared_version": null
+}

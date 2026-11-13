@@ -22,7 +22,8 @@ function timestamp(value) {
 }
 
 function short(value, length = 12) {
-  return typeof value === 'string' && value.length > length ? value.slice(0, length) : value;
+  if (typeof value !== 'string') return '';
+  return value.length > length ? value.slice(0, length) : value;
 }
 
 function closedSource(item = {}) {

@@ -1,14 +1,13 @@
 'use strict';
 
-const crypto = require('node:crypto');
 const { execFileSync } = require('node:child_process');
 
 const { createDiagnostic } = require('./diagnostics');
+const { LICENSE_PATTERN, findLicense } = require('./source-license');
 const { normalizeRelativePath } = require('./paths');
 
 const REF_POLICIES = new Set(['branch', 'release', 'pinned']);
 const SHA_PATTERN = /^[0-9a-f]{40}$/;
-const LICENSE_PATTERN = /^(LICEN[CS]E|COPYING|NOTICE)(\..*)?$/i;
 const LIMITS = Object.freeze({
   maxFiles: 500,
   maxTotalBytes: 20 * 1024 * 1024,
@@ -54,10 +53,6 @@ function validateSource(source) {
     return diagnostic('E_SCHEMA', 'pinned ref 必须是 40 位提交', source.ref);
   }
   return null;
-}
-
-function sha256(bytes) {
-  return crypto.createHash('sha256').update(bytes).digest('hex');
 }
 
 function normalizeFiles(rawFiles, { mainRelative = null } = {}) {
@@ -107,17 +102,6 @@ function normalizeFiles(rawFiles, { mainRelative = null } = {}) {
     return { ok: false, diagnostics: [diagnostic('E_LIMIT', '主文档超过大小限制', mainRelative)] };
   }
   return { ok: true, files, modes, diagnostics: [] };
-}
-
-function findLicense(files) {
-  const paths = [...files.keys()].sort();
-  for (const relativePath of paths) {
-    const name = relativePath.split('/').pop();
-    if (LICENSE_PATTERN.test(name)) {
-      return { path: relativePath, sha256: sha256(files.get(relativePath)) };
-    }
-  }
-  return null;
 }
 
 function classifyGhError(error) {
@@ -300,6 +284,5 @@ module.exports = {
   fetchSource,
   findLicense,
   normalizeFiles,
-  sha256,
   validateSource,
 };

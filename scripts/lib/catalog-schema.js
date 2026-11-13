@@ -54,8 +54,10 @@ const SOURCE_TRACKING_KEYS = new Set([
   'enabled',
   'last_synced_revision',
   'last_synced_digest',
+  'last_synced_license',
   'synced_at',
 ]);
+const LICENSE_TRACKING_KEYS = new Set(['path', 'sha256']);
 
 function diagnose(diagnostics, code, context, message) {
   diagnostics.push(createDiagnostic(code, { ...context, message }));
@@ -157,22 +159,71 @@ function sourceTracking(value, slug, diagnostics) {
   if (typeof value.enabled !== 'boolean') {
     diagnose(diagnostics, 'E_SCHEMA', { slug }, 'source_tracking.enabled 必须是布尔值');
   }
-  const revision = value.last_synced_revision ?? null;
-  if (revision !== null && !isNonEmptyString(revision)) {
-    diagnose(diagnostics, 'E_SCHEMA', { slug }, 'source_tracking.last_synced_revision 不合法');
-  }
   const digest = value.last_synced_digest ?? null;
   if (digest !== null && !isDigest(digest)) {
     diagnose(diagnostics, 'E_SCHEMA', { slug }, 'source_tracking.last_synced_digest 不合法');
+  }
+  const license = value.last_synced_license ?? null;
+  if (license !== null) {
+    if (!isPlainObject(license)) {
+      diagnose(
+        diagnostics,
+        'E_SCHEMA',
+        { slug },
+        'source_tracking.last_synced_license 必须是对象或 null',
+      );
+    } else {
+      for (const key of Object.keys(license)) {
+        if (!LICENSE_TRACKING_KEYS.has(key)) {
+          diagnose(
+            diagnostics,
+            'E_SCHEMA',
+            { slug },
+            'source_tracking.last_synced_license 含未知字段',
+          );
+        }
+      }
+      if (!isNonEmptyString(license.path)) {
+        diagnose(
+          diagnostics,
+          'E_SCHEMA',
+          { slug },
+          'source_tracking.last_synced_license.path 必须是非空字符串',
+        );
+      } else if (!normalizeRelativePath(license.path).ok) {
+        diagnose(
+          diagnostics,
+          'E_SCHEMA',
+          { slug, path: license.path },
+          'source_tracking.last_synced_license.path 必须是安全相对路径',
+        );
+      }
+      if (!isDigest(license.sha256)) {
+        diagnose(
+          diagnostics,
+          'E_SCHEMA',
+          { slug },
+          'source_tracking.last_synced_license.sha256 不合法',
+        );
+      }
+    }
   }
   const syncedAt = value.synced_at ?? null;
   if (syncedAt !== null && !isIsoTimestamp(syncedAt)) {
     diagnose(diagnostics, 'E_SCHEMA', { slug }, 'source_tracking.synced_at 不合法');
   }
+  const normalizedLicense =
+    isPlainObject(license) &&
+    isNonEmptyString(license.path) &&
+    normalizeRelativePath(license.path).ok &&
+    isDigest(license.sha256)
+      ? { path: license.path, sha256: license.sha256 }
+      : null;
   return {
     ...value,
-    last_synced_revision: revision,
+    last_synced_revision: value.last_synced_revision ?? null,
     last_synced_digest: digest,
+    last_synced_license: normalizedLicense,
     synced_at: syncedAt,
   };
 }

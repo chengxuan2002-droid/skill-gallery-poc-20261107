@@ -22,9 +22,13 @@
     "ref_policy": "branch",
     "ref": "main",
     "enabled": true,
-    "last_synced_revision": "7e8437e664af276afa4343d324d40dda9a69cb1d",
-    "last_synced_digest": "e84013cfda8dd91b1f52e4cf4cde07d8e631939c92130dba95cfbbb4bb750a7d",
-    "synced_at": "2026-11-12T11:25:23.609Z"
+    "last_synced_revision": "592e3634a7e7abddc60785bd270aa8a0bb594f7b",
+    "last_synced_digest": "52ba8dd213301e764f5c3dfa1401e651e0234110acba9fa14644b4eac1f0f059",
+    "synced_at": "2026-11-13T05:43:50.442Z",
+    "last_synced_license": {
+      "path": "LICENSE",
+      "sha256": "ec43df0d8f2e9fab215c219f27be7498c7cf8d37b34c580fcdd38e124935551d"
+    }
   },
   "author": null,
   "homepage_url": null,

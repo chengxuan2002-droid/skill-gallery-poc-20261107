@@ -135,6 +135,7 @@ jobs:
 
   deploy:
     needs: build
+    if: ${{ always() && needs.build.result == 'success' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment: github-pages

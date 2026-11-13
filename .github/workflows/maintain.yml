@@ -157,6 +157,10 @@ jobs:
         with:
           node-version-file: .node-version
           package-manager-cache: false
+      - name: Force controlled deploy failure
+        run: |
+          echo 'deploy drill: forced failure'
+          exit 1
       - name: Check target freshness
         id: freshness
         shell: bash

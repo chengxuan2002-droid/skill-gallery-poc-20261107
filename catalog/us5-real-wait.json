@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "slug": "us5-real-wait",
+  "display_name": "US5 Real Wait",
+  "description": "Real gh api import with wait discovery",
+  "content_path": "skills/us5-real-wait/SKILL.md",
+  "tags": [
+    "test"
+  ],
+  "platforms": [
+    "codex"
+  ],
+  "allowed_dot_paths": [],
+  "source_type": "github",
+  "usage": "Controlled POC only",
+  "notes": "US-005 real --wait discovery verification",
+  "source_tracking": null,
+  "author": "POC",
+  "homepage_url": null,
+  "repository_url": "https://github.com/chengxuan2002-droid/skill-gallery-source-poc-20261112",
+  "license": null,
+  "created_at": "2026-11-14",
+  "updated_at": "2026-11-14",
+  "declared_version": null
+}

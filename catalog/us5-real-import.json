@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "slug": "us5-real-import",
+  "display_name": "US5 Real Import",
+  "description": "Real gh api import and wait verification",
+  "content_path": "skills/us5-real-import/SKILL.md",
+  "tags": [
+    "test"
+  ],
+  "platforms": [
+    "codex"
+  ],
+  "allowed_dot_paths": [],
+  "source_type": "github",
+  "usage": "Controlled POC only",
+  "notes": "US-005 real gh/--wait verification",
+  "source_tracking": null,
+  "author": "POC",
+  "homepage_url": null,
+  "repository_url": "https://github.com/chengxuan2002-droid/skill-gallery-source-poc-20261112",
+  "license": null,
+  "created_at": "2026-11-14",
+  "updated_at": "2026-11-14",
+  "declared_version": null
+}
